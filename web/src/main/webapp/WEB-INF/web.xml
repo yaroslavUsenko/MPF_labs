@@ -1,0 +1,46 @@
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                             http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+  <listener><listener-class>sumdu.edu.ua.config.AppInit</listener-class></listener>
+
+  <!-- Список книг -->
+  <servlet>
+    <servlet-name>BooksServlet</servlet-name>
+    <servlet-class>sumdu.edu.ua.web.BooksServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>BooksServlet</servlet-name>
+    <url-pattern>/books</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>BooksApiServlet</servlet-name>
+    <servlet-class>sumdu.edu.ua.web.BooksApiServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>BooksApiServlet</servlet-name>
+    <url-pattern>/api/books</url-pattern>
+  </servlet-mapping>
+
+  <!-- Деталі книги -->
+  <servlet>
+    <servlet-name>BookDetailServlet</servlet-name>
+    <servlet-class>sumdu.edu.ua.web.BookDetailServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>BookDetailServlet</servlet-name>
+    <url-pattern>/api/books/*</url-pattern>
+  </servlet-mapping>
+
+  <!-- Коментарі до книги -->
+  <servlet>
+    <servlet-name>CommentsServlet</servlet-name>
+    <servlet-class>sumdu.edu.ua.web.CommentsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CommentsServlet</servlet-name>
+    <url-pattern>/comments/*</url-pattern>
+  </servlet-mapping>
+</web-app>
