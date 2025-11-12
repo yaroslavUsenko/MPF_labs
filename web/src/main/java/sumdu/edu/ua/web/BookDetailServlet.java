@@ -50,10 +50,16 @@ public class BookDetailServlet extends HttpServlet {
                 return;
             }
 
-            // Повернути інформацію про книгу з коментарями
+            // Повернути інформацію про книгу з коментарями (підтримка пагінації та фільтрації)
+            String author = req.getParameter("author");
+            int page = parseInt(req.getParameter("page"), 0);
+            int size = parseInt(req.getParameter("size"), 3);
+
             var bookDetail = new BookDetailDTO(book);
-            var comments = commentRepo.list(bookId, null, null, new PageRequest(0, 20));
-            bookDetail.setComments(comments.getItems());
+            var commentPage = commentRepo.list(bookId, author, null, new PageRequest(page, size));
+            bookDetail.setComments(commentPage.getItems());
+            // Додаткові метадані
+            // (якщо потрібно, можна розширити DTO)
 
             resp.setStatus(HttpServletResponse.SC_OK);
             om.writeValue(resp.getWriter(), bookDetail);
@@ -68,6 +74,14 @@ public class BookDetailServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             ErrorResponse err = new ErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server error");
             om.writeValue(resp.getWriter(), err);
+        }
+    }
+
+    private int parseInt(String s, int def) {
+        try {
+            return (s != null) ? Integer.parseInt(s) : def;
+        } catch (NumberFormatException e) {
+            return def;
         }
     }
 

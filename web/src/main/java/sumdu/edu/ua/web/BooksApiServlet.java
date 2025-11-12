@@ -27,7 +27,7 @@ public class BooksApiServlet extends HttpServlet {
         resp.setContentType("application/json;charset=UTF-8");
 
         int page = parseInt(req.getParameter("page"), 0);
-        int size = parseInt(req.getParameter("size"), 10);
+    int size = parseInt(req.getParameter("size"), 3);
         String q = req.getParameter("q");
         String sort = req.getParameter("sort");
 

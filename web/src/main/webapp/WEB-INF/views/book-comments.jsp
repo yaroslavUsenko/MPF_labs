@@ -121,6 +121,12 @@
         <div class="row">
             <div class="col-md-8">
                 <h3>💬 Коментарі (${comments.size()})</h3>
+                <form method="get" action="${pageContext.request.contextPath}/comments" class="mb-3 d-flex">
+                    <input type="hidden" name="bookId" value="${book.id}" />
+                    <input type="text" name="author" value="${author}" class="form-control" placeholder="Фільтр за автором" />
+                    <input type="hidden" name="size" value="${size}" />
+                    <button class="btn btn-custom" style="margin-left:8px;">🔎 Фільтр</button>
+                </form>
                 <c:if test="${empty comments}">
                     <div class="alert alert-info">📝 Ще немає коментарів. Будьте першим!</div>
                 </c:if>
@@ -141,6 +147,18 @@
                         </div>
                     </c:forEach>
                 </div>
+
+                <c:if test="${totalPages > 1}">
+                    <nav aria-label="comments pagination" style="margin-top:16px;">
+                        <ul class="pagination">
+                            <c:forEach var="p" begin="0" end="${totalPages - 1}">
+                                <li class="page-item ${p == page ? 'active' : ''}">
+                                    <a class="page-link" href="${pageContext.request.contextPath}/comments?bookId=${book.id}&page=${p}&size=${size}&author=${author}">${p + 1}</a>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </nav>
+                </c:if>
             </div>
 
             <div class="col-md-4">

@@ -44,13 +44,23 @@ public class CommentsServlet extends HttpServlet {
                 return;
             }
 
-            PageRequest pageRequest = new PageRequest(0, 20);
-            List<Comment> comments = commentRepo
-                    .list(bookId, null, null, pageRequest)
-                    .getItems();
+        String author = req.getParameter("author");
+        int page = parseInt(req.getParameter("page"), 0);
+        int size = parseInt(req.getParameter("size"), 3);
+        String since = req.getParameter("since");
 
-            req.setAttribute("book", book);
-            req.setAttribute("comments", comments);
+        PageRequest pageRequest = new PageRequest(page, size);
+        var commentPage = commentRepo.list(bookId, author, null, pageRequest);
+        List<Comment> comments = commentPage.getItems();
+        long total = commentPage.getTotal();
+
+        req.setAttribute("book", book);
+        req.setAttribute("comments", comments);
+        req.setAttribute("author", author);
+        req.setAttribute("page", page);
+        req.setAttribute("size", size);
+        req.setAttribute("total", total);
+        req.setAttribute("totalPages", (int)((total + size -1) / size));
             req.getRequestDispatcher("/WEB-INF/views/book-comments.jsp").forward(req, resp);
         } catch (NumberFormatException e) {
             log.warn("Bad request: invalid bookId format");
@@ -126,6 +136,14 @@ public class CommentsServlet extends HttpServlet {
         } catch (Exception e) {
             log.error("Error saving comment", e);
             throw new ServletException("Cannot save comment", e);
+        }
+    }
+
+    private int parseInt(String s, int def) {
+        try {
+            return (s != null) ? Integer.parseInt(s) : def;
+        } catch (NumberFormatException e) {
+            return def;
         }
     }
 }

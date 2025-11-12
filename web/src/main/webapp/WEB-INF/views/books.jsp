@@ -234,6 +234,14 @@
                             Додайте першу книгу в каталог, використовуючи форму поруч!
                         </div>
                     </c:if>
+                    <div style="margin-bottom: 16px;">
+                        <form method="get" action="${pageContext.request.contextPath}/books" class="d-flex" role="search">
+                            <input type="text" name="q" value="${q}" class="form-control" placeholder="Пошук за назвою або автором" />
+                            <input type="hidden" name="size" value="${size}" />
+                            <button type="submit" class="btn btn-custom" style="margin-left:8px;">🔎 Пошук</button>
+                        </form>
+                    </div>
+
                     <div class="books-list">
                         <c:forEach var="book" items="${books}">
                             <a href="${pageContext.request.contextPath}/comments?bookId=${book.id}" class="book-item">
@@ -246,6 +254,18 @@
                             </a>
                         </c:forEach>
                     </div>
+
+                        <c:if test="${totalPages > 1}">
+                            <nav aria-label="Page navigation" style="margin-top:16px;">
+                                <ul class="pagination">
+                                    <c:forEach var="p" begin="0" end="${totalPages - 1}">
+                                        <li class="page-item ${p == page ? 'active' : ''}">
+                                            <a class="page-link" href="${pageContext.request.contextPath}/books?page=${p}&size=${size}&q=${q}">${p + 1}</a>
+                                        </li>
+                                    </c:forEach>
+                                </ul>
+                            </nav>
+                        </c:if>
                 </div>
 
                 <div>
@@ -255,13 +275,13 @@
                             <div>
                                 <label for="title" class="form-label">📖 Назва книги</label>
                                 <input type="text" class="form-control" id="title" name="title" 
-                                       placeholder="Наприклад: Война и мир" required>
+                                       placeholder="Наприклад: Кобзар" required>
                             </div>
                             
                             <div>
                                 <label for="author" class="form-label">✍️ Автор</label>
                                 <input type="text" class="form-control" id="author" name="author" 
-                                       placeholder="Наприклад: Лев Толстой" required>
+                                       placeholder="Наприклад: Шевченко" required>
                             </div>
                             
                             <div>

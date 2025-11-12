@@ -1,10 +1,8 @@
 package sumdu.edu.ua.web;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
+import sumdu.edu.ua.core.domain.Page;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,16 +25,39 @@ public class BooksServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html;charset=UTF-8");
         try {
-            PageRequest pageRequest = new PageRequest(0, 20);
+            String q = req.getParameter("q");
+            int page = parseInt(req.getParameter("page"), 0);
+            int size = parseInt(req.getParameter("size"), 3);
+            String sort = req.getParameter("sort");
 
-            List<Book> books = bookRepo.search(null, pageRequest).getItems();
+            PageRequest pageRequest = new PageRequest(page, size, sort);
+            Page<Book> result = bookRepo.search(q, pageRequest);
+
+            List<Book> books = result.getItems();
+            long total = result.getTotal();
+
             req.setAttribute("books", books);
+            req.setAttribute("q", q);
+            req.setAttribute("page", page);
+            req.setAttribute("size", size);
+            req.setAttribute("sort", sort);
+            req.setAttribute("total", total);
+            int totalPages = (int) ((total + size - 1) / size);
+            req.setAttribute("totalPages", totalPages);
 
             req.getRequestDispatcher("/WEB-INF/views/books.jsp").forward(req, resp);
 
         } catch (Exception e) {
             log.error("Error loading books", e);
             throw new ServletException("Cannot load books", e);
+        }
+    }
+
+    private int parseInt(String s, int def) {
+        try {
+            return (s != null) ? Integer.parseInt(s) : def;
+        } catch (NumberFormatException e) {
+            return def;
         }
     }
 
