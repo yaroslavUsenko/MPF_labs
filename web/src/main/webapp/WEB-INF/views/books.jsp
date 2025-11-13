@@ -237,6 +237,7 @@
                     <div style="margin-bottom: 16px;">
                         <form method="get" action="${pageContext.request.contextPath}/books" class="d-flex" role="search">
                             <input type="text" name="q" value="${q}" class="form-control" placeholder="Пошук за назвою або автором" />
+                            <input type="hidden" name="page" value="${page}" />
                             <input type="hidden" name="size" value="${size}" />
                             <button type="submit" class="btn btn-custom" style="margin-left:8px;">🔎 Пошук</button>
                         </form>

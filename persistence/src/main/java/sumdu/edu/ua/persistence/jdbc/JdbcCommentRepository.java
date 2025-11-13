@@ -1,19 +1,20 @@
 package sumdu.edu.ua.persistence.jdbc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+import sumdu.edu.ua.core.domain.Comment;
+import sumdu.edu.ua.core.domain.Page;
+import sumdu.edu.ua.core.domain.PageRequest;
+import sumdu.edu.ua.core.port.CommentRepositoryPort;
+
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import sumdu.edu.ua.core.domain.Comment;
-import sumdu.edu.ua.core.domain.Page;
-import sumdu.edu.ua.core.domain.PageRequest;
-import sumdu.edu.ua.core.port.CommentRepositoryPort;
-
+@Repository
 public class JdbcCommentRepository implements CommentRepositoryPort {
     private static final Logger log = LoggerFactory.getLogger(JdbcCommentRepository.class);
 
@@ -121,29 +122,6 @@ public class JdbcCommentRepository implements CommentRepositoryPort {
             }
         } catch (SQLException e) {
             throw new RuntimeException("DB delete error", e);
-        }
-    }
-
-    @Override
-    public Comment getById(long commentId) {
-        try (var c = Db.get();
-             var ps = c.prepareStatement(
-                     "select id, book_id, author, text, created_at from comments where id = ?")) {
-            ps.setLong(1, commentId);
-            try (var rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return new Comment(
-                            rs.getLong("id"),
-                            rs.getLong("book_id"),
-                            rs.getString("author"),
-                            rs.getString("text"),
-                            rs.getTimestamp("created_at").toInstant()
-                    );
-                }
-            }
-            return null;
-        } catch (SQLException e) {
-            throw new RuntimeException("DB query error", e);
         }
     }
 }

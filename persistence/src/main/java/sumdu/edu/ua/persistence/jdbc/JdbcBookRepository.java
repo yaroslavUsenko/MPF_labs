@@ -1,20 +1,17 @@
 package sumdu.edu.ua.persistence.jdbc;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.stereotype.Repository;
 import sumdu.edu.ua.core.domain.Book;
 import sumdu.edu.ua.core.domain.Page;
 import sumdu.edu.ua.core.domain.PageRequest;
 import sumdu.edu.ua.core.port.CatalogRepositoryPort;
 
+import java.sql.*;
+import java.util.ArrayList;
+
+@Repository
 public class JdbcBookRepository implements CatalogRepositoryPort {
     private static final Logger log = LoggerFactory.getLogger(JdbcBookRepository.class);
 
@@ -27,8 +24,7 @@ public class JdbcBookRepository implements CatalogRepositoryPort {
         if (q != null && !q.isBlank()) {
             sql += " and (lower(title) like ? or lower(author) like ?)";
         }
-        sql += " order by " + sanitizeSort(request.getSort());
-        sql += " limit ? offset ?";
+        sql += " order by id desc limit ? offset ?";
 
         try (var c = Db.get();
              var ps = c.prepareStatement(sql)) {
@@ -67,34 +63,6 @@ public class JdbcBookRepository implements CatalogRepositoryPort {
         }
 
         return new Page<>(items, request, total);
-    }
-
-    private String sanitizeSort(String sort) {
-        // Дозволені колони: id, title, author, pub_year
-        // Дозволені напрями: asc, desc
-        if (sort == null || sort.isBlank()) {
-            return "id desc";
-        }
-        
-        String[] parts = sort.trim().split("\\s+");
-        if (parts.length != 2) {
-            return "id desc";
-        }
-        
-        String column = parts[0].toLowerCase();
-        String direction = parts[1].toLowerCase();
-        
-        // Валідація колони
-        if (!column.matches("id|title|author|pub_year")) {
-            return "id desc";
-        }
-        
-        // Валідація напрями
-        if (!direction.matches("asc|desc")) {
-            direction = "desc";
-        }
-        
-        return column + " " + direction;
     }
 
     @Override

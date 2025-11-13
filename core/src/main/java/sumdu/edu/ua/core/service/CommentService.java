@@ -1,10 +1,13 @@
 package sumdu.edu.ua.core.service;
 
-import sumdu.edu.ua.core.port.CommentRepositoryPort;
-
 import java.time.Duration;
 import java.time.Instant;
 
+import org.springframework.stereotype.Service;
+
+import sumdu.edu.ua.core.port.CommentRepositoryPort;
+
+@Service
 public class CommentService {
     private final CommentRepositoryPort repo;
 

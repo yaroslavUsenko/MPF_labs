@@ -124,6 +124,7 @@
                 <form method="get" action="${pageContext.request.contextPath}/comments" class="mb-3 d-flex">
                     <input type="hidden" name="bookId" value="${book.id}" />
                     <input type="text" name="author" value="${author}" class="form-control" placeholder="Фільтр за автором" />
+                    <input type="hidden" name="page" value="${page}" />
                     <input type="hidden" name="size" value="${size}" />
                     <button class="btn btn-custom" style="margin-left:8px;">🔎 Фільтр</button>
                 </form>
