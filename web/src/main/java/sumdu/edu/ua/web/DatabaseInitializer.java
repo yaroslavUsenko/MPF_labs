@@ -4,7 +4,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import sumdu.edu.ua.persistence.jdbc.DbInit;
+import sumdu.edu.ua.core.port.StorageInitializationPort;
 
 /**
  * Компонент для ініціалізації бази даних при старті застосунку.
@@ -12,8 +12,11 @@ import sumdu.edu.ua.persistence.jdbc.DbInit;
  */
 @Component
 public class DatabaseInitializer {
+    
+    private final StorageInitializationPort storageInitializer;
 
-    public DatabaseInitializer() {
+    public DatabaseInitializer(StorageInitializationPort storageInitializer) {
+        this.storageInitializer = storageInitializer;
         System.out.println("DatabaseInitializer created - демонстрація створення біну");
     }
 
@@ -25,7 +28,7 @@ public class DatabaseInitializer {
     public void initDatabase() {
         System.out.println("🔧 Ініціалізація бази даних...");
         try {
-            DbInit.init();
+            storageInitializer.initialize();
             System.out.println("✅ База даних успішно ініціалізована");
         } catch (Exception e) {
             System.err.println("❌ Помилка при ініціалізації бази даних: " + e.getMessage());
@@ -33,3 +36,4 @@ public class DatabaseInitializer {
         }
     }
 }
+
