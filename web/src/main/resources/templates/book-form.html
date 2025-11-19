@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+  <head th:replace="~{fragments/header :: head}"></head>
+  <body>
+    <header th:replace="~{fragments/header :: header}"></header>
+
+    <main class="container">
+      <div th:if="${error}" class="error-message" th:text="#{${error}}"></div>
+
+      <h2 th:text="#{form.add.title}">Add New Book</h2>
+
+      <form method="POST" th:action="@{/books}" class="book-form">
+        <div class="form-group">
+          <label for="title" th:text="#{form.add.label.title}">Title:</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            th:value="${book?.title}"
+            th:placeholder="#{form.add.placeholder.title}"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="author" th:text="#{form.add.label.author}">Author:</label>
+          <input
+            type="text"
+            id="author"
+            name="author"
+            th:value="${book?.author}"
+            th:placeholder="#{form.add.placeholder.author}"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="pubYear" th:text="#{form.add.label.year}"
+            >Publication Year:</label
+          >
+          <input
+            type="number"
+            id="pubYear"
+            name="pubYear"
+            th:value="${book?.pubYear > 0 ? book.pubYear : ''}"
+            th:placeholder="#{form.add.placeholder.year}"
+            min="1000"
+            max="2100"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <button type="submit" th:text="#{form.add.submit}">Add Book</button>
+          <a
+            href="/books"
+            th:href="@{/books}"
+            class="btn-secondary"
+            th:text="#{form.add.cancel}"
+            >Cancel</a
+          >
+        </div>
+      </form>
+
+      <!-- Допоміжна інформація -->
+      <div
+        style="
+          margin-top: 30px;
+          padding: 15px;
+          background-color: #f0f0f0;
+          border-radius: 5px;
+        "
+      >
+        <h3 th:text="#{form.add.info.title}">Tips for Adding a Book</h3>
+        <ul>
+          <li th:text="#{form.add.info.item1}">
+            Make sure the title is not empty
+          </li>
+          <li th:text="#{form.add.info.item2}">Provide the full author name</li>
+          <li th:text="#{form.add.info.item3}">
+            Enter a valid publication year (1000-2100)
+          </li>
+        </ul>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Book Catalog Application. Spring MVC + Thymeleaf</p>
+    </footer>
+  </body>
+</html>

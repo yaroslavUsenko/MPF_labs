@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+  <head th:replace="~{fragments/header :: head}"></head>
+  <body>
+    <header th:replace="~{fragments/header :: header}"></header>
+
+    <main class="container">
+      <div th:if="${error}" class="error-message" th:text="#{${error}}"></div>
+
+      <h2 th:text="#{books.title}">Books</h2>
+
+      <!-- Форма пошуку -->
+      <form method="GET" th:action="@{/books}" class="search-form">
+        <input
+          type="text"
+          name="q"
+          th:value="${q}"
+          th:placeholder="#{books.search.placeholder}"
+          placeholder="Search books..."
+        />
+        <button type="submit" th:text="#{books.search.button}">Search</button>
+        <a
+          href="/books"
+          th:href="@{/books}"
+          class="btn-secondary"
+          th:text="#{books.search.clear}"
+          >Clear</a
+        >
+      </form>
+
+      <!-- Інформація про результати пошуку -->
+      <div
+        th:if="${q != null and q != ''}"
+        style="margin-bottom: 20px; font-size: 14px; color: #666"
+      >
+        <span th:text="#{books.search.results(${total})}">Search results</span>
+      </div>
+
+      <!-- Список книг -->
+      <div th:if="${!books.isEmpty()}">
+        <div class="book-item" th:each="book : ${books}">
+          <div class="book-info">
+            <p>
+              <strong th:text="#{books.list.title}">Title:</strong>
+              <span th:text="${book.title}"></span>
+            </p>
+            <p>
+              <strong th:text="#{books.list.author}">Author:</strong>
+              <span th:text="${book.author}"></span>
+            </p>
+            <p>
+              <strong th:text="#{books.list.year}">Year:</strong>
+              <span th:text="${book.pubYear}"></span>
+            </p>
+          </div>
+          <div style="margin-top: 15px; display: flex; gap: 10px">
+            <a
+              th:href="@{/books/{id}/comments(id=${book.id})}"
+              class="btn-primary"
+              th:text="#{books.list.comments}"
+              >View Comments</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Повідомлення про відсутність книг -->
+      <div th:unless="${!books.isEmpty()}" class="empty-message">
+        <div style="margin-bottom: 30px">
+          <p th:text="#{books.empty}">No books found</p>
+        </div>
+        <a
+          href="/books/add"
+          th:href="@{/books/add}"
+          class="btn-primary"
+          th:text="#{books.add.link}"
+          >Add the first book</a
+        >
+      </div>
+
+      <!-- Пагінація -->
+      <div th:if="${!books.isEmpty()}" class="pagination">
+        <!-- Попередня сторінка -->
+        <a
+          th:if="${page > 0}"
+          th:href="@{/books(page=${page - 1}, size=${size}, q=${q})}"
+          th:text="#{pagination.prev}"
+          >Previous</a
+        >
+        <span
+          th:if="${page == 0}"
+          style="opacity: 0.5"
+          th:text="#{pagination.prev}"
+          >Previous</span
+        >
+
+        <!-- Номери сторінок -->
+        <span
+          th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+          th:classappend="${i == page} ? 'active' : ''"
+        >
+          <a
+            th:if="${i != page}"
+            th:href="@{/books(page=${i}, size=${size}, q=${q})}"
+            th:text="${i + 1}"
+          ></a>
+          <span th:if="${i == page}" th:text="${i + 1}"></span>
+        </span>
+
+        <!-- Наступна сторінка -->
+        <a
+          th:if="${page < totalPages - 1}"
+          th:href="@{/books(page=${page + 1}, size=${size}, q=${q})}"
+          th:text="#{pagination.next}"
+          >Next</a
+        >
+        <span
+          th:if="${page >= totalPages - 1}"
+          style="opacity: 0.5"
+          th:text="#{pagination.next}"
+          >Next</span
+        >
+      </div>
+
+      <!-- Лічильник книг -->
+      <div
+        th:if="${total > 0}"
+        style="
+          text-align: center;
+          margin-top: 30px;
+          color: #666;
+          font-size: 14px;
+        "
+      >
+        <p th:text="#{books.count(${total}, ${totalPages})}">Total: X books</p>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Book Catalog Application. Spring MVC + Thymeleaf</p>
+    </footer>
+  </body>
+</html>

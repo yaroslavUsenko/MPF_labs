@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+  <head th:fragment="head">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Catalog</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #333;
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      header {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        padding: 20px;
+      }
+
+      header h1 {
+        color: #667eea;
+        margin-bottom: 15px;
+        font-size: 28px;
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      nav a,
+      nav button {
+        background-color: #667eea;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s;
+      }
+
+      nav a:hover,
+      nav button:hover {
+        background-color: #764ba2;
+      }
+
+      nav a.active {
+        background-color: #764ba2;
+      }
+
+      .lang-switcher {
+        display: flex;
+        gap: 5px;
+      }
+
+      .lang-switcher a {
+        padding: 8px 12px;
+        font-size: 12px;
+        background-color: #f0f0f0;
+        color: #333;
+        border: 2px solid transparent;
+      }
+
+      .lang-switcher a.active {
+        background-color: #667eea;
+        color: white;
+        border-color: #667eea;
+      }
+
+      main {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+      }
+
+      h2 {
+        color: #667eea;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 10px;
+      }
+
+      h3 {
+        color: #764ba2;
+        margin-bottom: 15px;
+      }
+
+      .book-item,
+      .comment-item {
+        background-color: #f8f9ff;
+        border-left: 4px solid #667eea;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        transition: transform 0.2s;
+      }
+
+      .book-item:hover,
+      .comment-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+      }
+
+      .empty-message {
+        text-align: center;
+        padding: 40px;
+        color: #999;
+        font-size: 16px;
+      }
+
+      form {
+        background-color: #f8f9ff;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 500;
+      }
+
+      input[type='text'],
+      input[type='number'],
+      input[type='date'],
+      input[type='email'],
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-family: inherit;
+        font-size: 14px;
+      }
+
+      input[type='text']:focus,
+      input[type='number']:focus,
+      input[type='date']:focus,
+      input[type='email']:focus,
+      textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      button[type='submit'],
+      .btn-primary {
+        background-color: #667eea;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: background-color 0.3s;
+      }
+
+      button[type='submit']:hover,
+      .btn-primary:hover {
+        background-color: #764ba2;
+      }
+
+      .btn-danger {
+        background-color: #e74c3c;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+
+      .btn-danger:hover {
+        background-color: #c0392b;
+      }
+
+      .btn-secondary {
+        background-color: #95a5a6;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+        margin-left: 5px;
+      }
+
+      .btn-secondary:hover {
+        background-color: #7f8c8d;
+      }
+
+      .pagination {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 30px;
+        flex-wrap: wrap;
+      }
+
+      .pagination a,
+      .pagination span {
+        padding: 10px 15px;
+        background-color: #f0f0f0;
+        border-radius: 5px;
+        text-decoration: none;
+        color: #333;
+        transition: background-color 0.3s;
+      }
+
+      .pagination a:hover {
+        background-color: #667eea;
+        color: white;
+      }
+
+      .pagination .active {
+        background-color: #667eea;
+        color: white;
+      }
+
+      .search-form {
+        margin-bottom: 20px;
+        display: flex;
+        gap: 10px;
+      }
+
+      .search-form input {
+        flex: 1;
+        margin-bottom: 0;
+      }
+
+      .search-form button {
+        padding: 10px 20px;
+      }
+
+      .error-message {
+        background-color: #ffebee;
+        color: #c62828;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        border-left: 4px solid #c62828;
+      }
+
+      .success-message {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        border-left: 4px solid #2e7d32;
+      }
+
+      .book-info {
+        display: grid;
+        gap: 10px;
+      }
+
+      .book-info p {
+        margin: 0;
+      }
+
+      .book-info strong {
+        color: #667eea;
+      }
+
+      .comment-meta {
+        font-size: 12px;
+        color: #999;
+        margin-bottom: 8px;
+      }
+
+      .comment-text {
+        font-size: 14px;
+        color: #333;
+      }
+
+      .comment-actions {
+        display: flex;
+        gap: 5px;
+        margin-top: 10px;
+      }
+
+      footer {
+        text-align: center;
+        margin-top: 40px;
+        padding: 20px;
+        color: white;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header th:fragment="header">
+      <div class="container">
+        <h1 th:text="#{header.title}">Book Catalog</h1>
+        <nav>
+          <div style="display: flex; gap: 10px; flex: 1">
+            <a href="/books" th:href="@{/books}" th:text="#{nav.books}"
+              >Books</a
+            >
+            <a href="/books/add" th:href="@{/books/add}" th:text="#{nav.add}"
+              >Add Book</a
+            >
+          </div>
+          <div class="lang-switcher">
+            <a
+              href="#"
+              th:href="@{/books(lang=uk)}"
+              th:classappend="${#locale.language} == 'uk' ? 'active' : ''"
+              th:text="#{lang.uk}"
+              >УК</a
+            >
+            <a
+              href="#"
+              th:href="@{/books(lang=en)}"
+              th:classappend="${#locale.language} == 'en' ? 'active' : ''"
+              th:text="#{lang.en}"
+              >EN</a
+            >
+          </div>
+        </nav>
+      </div>
+    </header>
+  </body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+  <head th:replace="~{fragments/header :: head}"></head>
+  <body>
+    <header th:replace="~{fragments/header :: header}"></header>
+
+    <main class="container">
+      <div th:if="${error}" class="error-message" th:text="#{${error}}"></div>
+
+      <!-- Інформація про книгу -->
+      <h2 th:text="#{comments.book.title(${book.title})}">Book: Title</h2>
+      <div class="book-item">
+        <div class="book-info">
+          <p>
+            <strong th:text="#{books.list.title}">Title:</strong>
+            <span th:text="${book.title}"></span>
+          </p>
+          <p>
+            <strong th:text="#{books.list.author}">Author:</strong>
+            <span th:text="${book.author}"></span>
+          </p>
+          <p>
+            <strong th:text="#{books.list.year}">Year:</strong>
+            <span th:text="${book.pubYear}"></span>
+          </p>
+        </div>
+        <div style="margin-top: 15px">
+          <a
+            href="/books"
+            th:href="@{/books}"
+            class="btn-secondary"
+            th:text="#{comments.back.link}"
+            >Back to Books</a
+          >
+        </div>
+      </div>
+
+      <!-- Форма додавання коментаря -->
+      <h3 th:text="#{comments.form.title}">Add Comment</h3>
+      <form
+        method="POST"
+        th:action="@{/books/{id}/comments/add(id=${book.id})}"
+        class="comment-form"
+      >
+        <div class="form-group">
+          <label for="author" th:text="#{comments.form.label.author}"
+            >Your Name:</label
+          >
+          <input
+            type="text"
+            id="author"
+            name="author"
+            th:placeholder="#{comments.form.placeholder.author}"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="text" th:text="#{comments.form.label.text}"
+            >Comment:</label
+          >
+          <textarea
+            id="text"
+            name="text"
+            th:placeholder="#{comments.form.placeholder.text}"
+            required
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <button type="submit" th:text="#{comments.form.submit}">
+            Add Comment
+          </button>
+        </div>
+      </form>
+
+      <!-- Фільтрація за автором -->
+      <h3 th:text="#{comments.filter.title}">Filter Comments</h3>
+      <form
+        method="GET"
+        th:action="@{/books/{id}/comments(id=${book.id})}"
+        class="search-form"
+      >
+        <input
+          type="text"
+          name="author"
+          th:value="${author}"
+          th:placeholder="#{comments.filter.placeholder.author}"
+          placeholder="Filter by author..."
+        />
+        <button type="submit" th:text="#{comments.filter.button}">
+          Filter
+        </button>
+        <a
+          th:href="@{/books/{id}/comments(id=${book.id})}"
+          class="btn-secondary"
+          th:text="#{comments.filter.clear}"
+          >Clear</a
+        >
+      </form>
+
+      <!-- Список коментарів -->
+      <h3 th:text="#{comments.list.title}">Comments</h3>
+
+      <div th:if="${!comments.isEmpty()}">
+        <div class="comment-item" th:each="comment : ${comments}">
+          <div class="comment-meta">
+            <strong th:text="${comment.author}"></strong>
+            <span th:text="#{comments.list.on}"> on </span>
+            <time
+              th:text="${#temporals.format(comment.createdAt, 'dd MMM yyyy, HH:mm')}"
+            ></time>
+          </div>
+          <div class="comment-text" th:text="${comment.text}"></div>
+          <div class="comment-actions">
+            <form
+              method="POST"
+              th:action="@{/books/{bookId}/comments/{commentId}/delete(bookId=${book.id}, commentId=${comment.id})}"
+              style="display: inline"
+            >
+              <button
+                type="submit"
+                class="btn-danger"
+                th:text="#{comments.list.delete}"
+                onclick="return confirm('Are you sure?')"
+              >
+                Delete
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Повідомлення про відсутність коментарів -->
+      <div th:unless="${!comments.isEmpty()}" class="empty-message">
+        <p th:text="#{comments.empty}">No comments yet</p>
+        <p th:text="#{comments.be.first}">Be the first to leave a comment!</p>
+      </div>
+
+      <!-- Пагінація -->
+      <div th:if="${!comments.isEmpty()}" class="pagination">
+        <!-- Попередня сторінка -->
+        <a
+          th:if="${page > 0}"
+          th:href="@{/books/{id}/comments(id=${book.id}, page=${page - 1}, size=${size}, author=${author})}"
+          th:text="#{pagination.prev}"
+          >Previous</a
+        >
+        <span
+          th:if="${page == 0}"
+          style="opacity: 0.5"
+          th:text="#{pagination.prev}"
+          >Previous</span
+        >
+
+        <!-- Номери сторінок -->
+        <span
+          th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+          th:classappend="${i == page} ? 'active' : ''"
+        >
+          <a
+            th:if="${i != page}"
+            th:href="@{/books/{id}/comments(id=${book.id}, page=${i}, size=${size}, author=${author})}"
+            th:text="${i + 1}"
+          ></a>
+          <span th:if="${i == page}" th:text="${i + 1}"></span>
+        </span>
+
+        <!-- Наступна сторінка -->
+        <a
+          th:if="${page < totalPages - 1}"
+          th:href="@{/books/{id}/comments(id=${book.id}, page=${page + 1}, size=${size}, author=${author})}"
+          th:text="#{pagination.next}"
+          >Next</a
+        >
+        <span
+          th:if="${page >= totalPages - 1}"
+          style="opacity: 0.5"
+          th:text="#{pagination.next}"
+          >Next</span
+        >
+      </div>
+
+      <!-- Лічильник коментарів -->
+      <div
+        th:if="${total > 0}"
+        style="
+          text-align: center;
+          margin-top: 30px;
+          color: #666;
+          font-size: 14px;
+        "
+      >
+        <p th:text="#{comments.count(${total}, ${totalPages})}">
+          Total: X comments
+        </p>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Book Catalog Application. Spring MVC + Thymeleaf</p>
+    </footer>
+  </body>
+</html>
