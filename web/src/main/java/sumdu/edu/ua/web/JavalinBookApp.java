@@ -17,16 +17,6 @@ import sumdu.edu.ua.persistence.jdbc.DbInit;
 import sumdu.edu.ua.persistence.jdbc.JdbcBookRepository;
 import sumdu.edu.ua.persistence.jdbc.JdbcCommentRepository;
 
-/**
- * Javalin REST-сервіс для керування книжками та коментарями
- * 
- * Демонструє:
- * -基本создание приложения Javalin
- * - REST маршрути (GET, POST, DELETE)
- * - Middleware для логування (app.before)
- * - Exception handling (app.exception)
- * - Context для обробки запитів та відповідей
- */
 public class JavalinBookApp {
     private static final Logger logger = LoggerFactory.getLogger(JavalinBookApp.class);
     private static final int PORT = 8080;
