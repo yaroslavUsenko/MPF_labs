@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Каталог книг</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 30px 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .container-main {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        padding: 40px;
+        margin: 0 auto;
+        max-width: 1100px;
+      }
+
+      .header-section {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      h1 {
+        color: #333;
+        font-size: 2.5em;
+        font-weight: 700;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .header-subtitle {
+        color: #999;
+        font-size: 1.1em;
+        margin-bottom: 20px;
+      }
+
+      .separator {
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        margin: 0 auto 30px;
+        border-radius: 2px;
+      }
+
+      .main-content {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 30px;
+      }
+
+      h3 {
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 20px;
+        font-size: 1.3em;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .books-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .book-item {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 18px;
+        border-radius: 10px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        cursor: pointer;
+        display: block;
+      }
+
+      .book-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: white;
+        text-decoration: none;
+      }
+
+      .book-item-title {
+        font-weight: 700;
+        font-size: 18px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .book-item-author {
+        font-size: 14px;
+        opacity: 0.95;
+      }
+
+      .empty-message {
+        background: #e7f3ff;
+        border-left: 4px solid #667eea;
+        padding: 15px;
+        border-radius: 6px;
+        color: #0066cc;
+      }
+
+      .form-section {
+        background: linear-gradient(135deg, #f5f7fa 0%, #f0f2f5 100%);
+        border-radius: 12px;
+        padding: 25px;
+        border: 1px solid #e0e0e0;
+        position: sticky;
+        top: 30px;
+      }
+
+      .form-section h3 {
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 1.1em;
+      }
+
+      .form-label {
+        color: #555;
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 0.95em;
+      }
+
+      .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-size: 0.95em;
+        transition: all 0.3s ease;
+        margin-bottom: 15px;
+        width: 100%;
+        font-family: inherit;
+      }
+
+      .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+        outline: none;
+      }
+
+      .form-control::placeholder {
+        color: #ccc;
+      }
+
+      .form-text {
+        font-size: 0.85em;
+        color: #999;
+        margin-top: -10px;
+        margin-bottom: 12px;
+      }
+
+      .btn-custom {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 12px 20px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-size: 0.95em;
+        width: 100%;
+      }
+
+      .btn-custom:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+      }
+
+      .btn-custom:active {
+        transform: translateY(0);
+      }
+
+      .btn-danger-custom {
+        background: #dc3545;
+        padding: 4px 12px;
+        font-size: 12px;
+        border: none;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-danger-custom:hover {
+        background: #c82333;
+      }
+
+      .comment-item {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+        margin-bottom: 10px;
+      }
+
+      .comment-author {
+        font-weight: bold;
+        color: #667eea;
+        margin-bottom: 10px;
+      }
+
+      .comment-text {
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 10px;
+      }
+
+      .comment-date {
+        font-size: 12px;
+        color: #999;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        overflow-y: auto;
+        padding: 20px;
+      }
+
+      .modal-overlay.active {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 12px;
+        max-width: 900px;
+        width: 100%;
+        padding: 30px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        margin-top: 20px;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .modal-close {
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: #333;
+      }
+
+      .book-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      .book-header h2 {
+        margin: 0 0 10px 0;
+        font-size: 32px;
+      }
+
+      .book-header p {
+        margin: 0;
+        font-size: 16px;
+        opacity: 0.9;
+      }
+
+      .modal-body {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 20px;
+      }
+
+      .modal-footer {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .search-form {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .search-form input {
+        flex: 1;
+        margin-bottom: 0;
+      }
+
+      .search-form button {
+        width: auto;
+        padding: 10px 20px;
+        margin: 0;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .main-content {
+          grid-template-columns: 1fr;
+        }
+
+        .form-section {
+          position: static;
+        }
+
+        h1 {
+          font-size: 1.8em;
+        }
+
+        .container-main {
+          padding: 20px;
+        }
+
+        .modal-body {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-main">
+      <div class="header-section">
+        <h1>📚 Каталог книг</h1>
+        <p class="header-subtitle">
+          Збірка цікавих творів світової та вітчизняної літератури
+        </p>
+        <div class="separator"></div>
+      </div>
+
+      <div class="main-content">
+        <div>
+          <h3>📖 Список книг</h3>
+          <div id="empty-message" class="empty-message" style="display: none">
+            <strong>📖 Библіотека порожня</strong><br />
+            Додайте першу книгу в каталог, використовуючи форму поруч!
+          </div>
+
+          <div class="search-form">
+            <input
+              type="text"
+              id="search-input"
+              class="form-control"
+              placeholder="Пошук за назвою або автором"
+            />
+            <button type="button" onclick="handleSearch()" class="btn-custom">
+              🔎 Пошук
+            </button>
+          </div>
+
+          <div class="books-list" id="books-list">
+            <!-- Books will be loaded here -->
+          </div>
+        </div>
+
+        <div>
+          <div class="form-section">
+            <h3>➕ Додати нову книгу</h3>
+            <form id="add-book-form" onsubmit="handleAddBook(event)">
+              <div>
+                <label for="title" class="form-label">📖 Назва книги</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="title"
+                  name="title"
+                  placeholder="Наприклад: Кобзар"
+                  required
+                />
+              </div>
+
+              <div>
+                <label for="author" class="form-label">✍️ Автор</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="author"
+                  name="author"
+                  placeholder="Наприклад: Шевченко"
+                  required
+                />
+              </div>
+
+              <div>
+                <label for="pubDate" class="form-label"
+                  >📅 Дата публікації</label
+                >
+                <input
+                  type="date"
+                  class="form-control"
+                  id="pubDate"
+                  name="pubDate"
+                  required
+                />
+                <small class="form-text"
+                  >Рік книги буде автоматично витягнутий з дати</small
+                >
+              </div>
+
+              <button type="submit" class="btn-custom">➕ Додати книгу</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for book details and comments -->
+    <div id="book-modal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modal-book-title" style="margin: 0"></h2>
+          <button type="button" class="modal-close" onclick="closeModal()">
+            ✕
+          </button>
+        </div>
+
+        <div class="book-header">
+          <h2 style="margin: 0 0 10px 0; font-size: 28px">
+            📚 <span id="modal-book-title-header"></span>
+          </h2>
+          <p style="margin: 0">
+            ✍️ <span id="modal-book-author"></span>, 📅
+            <span id="modal-book-year"></span>
+          </p>
+        </div>
+
+        <div class="modal-body">
+          <div>
+            <h3 style="color: #555; margin-top: 0; margin-bottom: 20px">
+              💬 Коментарі
+            </h3>
+            <div
+              id="comments-list"
+              style="display: flex; flex-direction: column; gap: 12px"
+            >
+              <!-- Comments will be loaded here -->
+            </div>
+          </div>
+
+          <div>
+            <div class="form-section">
+              <h3 style="margin-top: 0; color: #333">➕ Додати коментар</h3>
+              <form id="add-comment-form" onsubmit="handleAddComment(event)">
+                <input type="hidden" id="comment-book-id" />
+
+                <div>
+                  <label for="comment-author" class="form-label"
+                    >✍️ Ваше ім'я</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="comment-author"
+                    name="author"
+                    placeholder="Введіть ваше ім'я"
+                    required
+                    maxlength="64"
+                  />
+                </div>
+
+                <div>
+                  <label for="comment-text" class="form-label"
+                    >💭 Ваш коментар</label
+                  >
+                  <textarea
+                    class="form-control"
+                    id="comment-text"
+                    name="text"
+                    rows="5"
+                    placeholder="Поділіться своєю думкою про книгу..."
+                    required
+                    maxlength="1000"
+                    style="margin-bottom: 10px; resize: vertical"
+                  ></textarea>
+                  <small class="form-text">Макс. 1000 символів</small>
+                </div>
+
+                <button
+                  type="submit"
+                  class="btn-custom"
+                  style="margin-top: 15px"
+                >
+                  ➕ Додати коментар
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button
+            type="button"
+            onclick="closeModal()"
+            class="btn-custom"
+            style="width: auto; padding: 10px 30px"
+          >
+            ← Повернутись до списку
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentBookId = null
+
+      async function loadBooks(query = '') {
+        try {
+          const url = query ? `/books?q=${encodeURIComponent(query)}` : '/books'
+          console.log('Loading books from:', url)
+          const response = await fetch(url)
+          const data = await response.json()
+
+          console.log('Loaded books data:', data)
+
+          const booksList = document.getElementById('books-list')
+          const emptyMessage = document.getElementById('empty-message')
+
+          if (!data.items || data.items.length === 0) {
+            console.log('No books found')
+            booksList.innerHTML = ''
+            emptyMessage.style.display = 'block'
+            return
+          }
+
+          console.log('Rendering', data.items.length, 'books')
+          emptyMessage.style.display = 'none'
+          booksList.innerHTML = data.items
+            .map(
+              book => `
+                    <div class="book-item" onclick="viewBook(${book.id});">
+                        <div class="book-item-title">
+                            📖 ${escapeHtml(book.title)}
+                        </div>
+                        <div class="book-item-author">
+                            ✍️ <i>${escapeHtml(book.author)}</i> — ${
+                book.pubYear
+              }
+                        </div>
+                    </div>
+                `
+            )
+            .join('')
+        } catch (error) {
+          console.error('Error loading books:', error)
+        }
+      }
+
+      async function viewBook(bookId) {
+        currentBookId = bookId
+        try {
+          const bookResponse = await fetch(`/books/${bookId}`)
+          const book = await bookResponse.json()
+
+          document.getElementById('modal-book-title').textContent = book.title
+          document.getElementById('modal-book-title-header').textContent =
+            book.title
+          document.getElementById('modal-book-author').textContent = book.author
+          document.getElementById('modal-book-year').textContent = book.pubYear
+          document.getElementById('comment-book-id').value = bookId
+
+          await loadComments(bookId)
+          document.getElementById('book-modal').classList.add('active')
+          document.body.style.overflow = 'hidden'
+        } catch (error) {
+          console.error('Error loading book:', error)
+          alert('Помилка при завантаженні деталей книги')
+        }
+      }
+
+      async function loadComments(bookId) {
+        try {
+          const response = await fetch(`/books/${bookId}/comments`)
+          const data = await response.json()
+
+          const commentsList = document.getElementById('comments-list')
+          if (!data.items || data.items.length === 0) {
+            commentsList.innerHTML =
+              '<div class="empty-message">📝 Ще немає коментарів. Будьте першим!</div>'
+            return
+          }
+
+          commentsList.innerHTML = data.items
+            .map(
+              comment => `
+                    <div class="comment-item">
+                        <div class="comment-author">👤 ${escapeHtml(
+                          comment.author
+                        )}</div>
+                        <div class="comment-text">${escapeHtml(
+                          comment.text
+                        )}</div>
+                        <div class="comment-date">
+                            <span>📅 ${formatDate(comment.createdAt)}</span>
+                            <button type="button" onclick="deleteComment(${bookId}, ${
+                comment.id
+              })" class="btn-danger-custom">🗑️ Видалити</button>
+                        </div>
+                    </div>
+                `
+            )
+            .join('')
+        } catch (error) {
+          console.error('Error loading comments:', error)
+          document.getElementById('comments-list').innerHTML =
+            '<div style="color: red;">Помилка при завантаженні коментарів</div>'
+        }
+      }
+
+      function closeModal() {
+        document.getElementById('book-modal').classList.remove('active')
+        document.body.style.overflow = 'auto'
+        document.getElementById('add-comment-form').reset()
+      }
+
+      // Close modal when clicking on overlay
+      document
+        .getElementById('book-modal')
+        .addEventListener('click', function (event) {
+          if (event.target === this) {
+            closeModal()
+          }
+        })
+
+      async function handleAddBook(event) {
+        event.preventDefault()
+        try {
+          const formData = new FormData(event.target)
+          const pubDate = new Date(formData.get('pubDate'))
+
+          const response = await fetch('/books', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              title: formData.get('title'),
+              author: formData.get('author'),
+              pubYear: pubDate.getFullYear(),
+            }),
+          })
+
+          console.log('POST /books response status:', response.status)
+          const responseData = await response.json()
+          console.log('POST /books response data:', responseData)
+
+          if (response.ok) {
+            console.log('Book added successfully:', responseData)
+            event.target.reset()
+            await loadBooks()
+            console.log('Books reloaded after adding new book')
+          } else {
+            console.error(
+              'Помилка при додаванні книги: status',
+              response.status,
+              responseData
+            )
+          }
+        } catch (error) {
+          console.error('Error adding book:', error)
+        }
+      }
+
+      async function handleAddComment(event) {
+        event.preventDefault()
+        try {
+          const formData = new FormData(event.target)
+          const bookId = document.getElementById('comment-book-id').value
+
+          const response = await fetch(`/books/${bookId}/comments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              author: formData.get('author'),
+              text: formData.get('text'),
+            }),
+          })
+
+          if (response.ok) {
+            event.target.reset()
+            await loadComments(bookId)
+          } else {
+            console.error(
+              'Помилка при додаванні коментара: status',
+              response.status
+            )
+          }
+        } catch (error) {
+          console.error('Error adding comment:', error)
+        }
+      }
+
+      async function deleteComment(bookId, commentId) {
+        if (!confirm('Видалити коментар?')) return
+
+        try {
+          const response = await fetch(
+            `/books/${bookId}/comments/${commentId}`,
+            {
+              method: 'DELETE',
+            }
+          )
+
+          if (response.ok) {
+            await loadComments(bookId)
+          } else {
+            console.error(
+              'Помилка при видаленні коментара: status',
+              response.status
+            )
+          }
+        } catch (error) {
+          console.error('Error deleting comment:', error)
+        }
+      }
+
+      function handleSearch() {
+        const query = document.getElementById('search-input').value
+        loadBooks(query)
+      }
+
+      function formatDate(instant) {
+        const date = new Date(instant)
+        const formatter = new Intl.DateTimeFormat('uk-UA', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+        return formatter.format(date)
+      }
+
+      function escapeHtml(text) {
+        const div = document.createElement('div')
+        div.textContent = text
+        return div.innerHTML
+      }
+
+      // Load books on page load
+      loadBooks()
+    </script>
+  </body>
+</html>
